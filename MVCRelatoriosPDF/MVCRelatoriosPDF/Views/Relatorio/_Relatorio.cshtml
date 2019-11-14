@@ -1,0 +1,98 @@
+﻿@model PagedList.IPagedList<MVCRelatoriosPDF.Models.Cliente>
+
+
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title Relatório</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+	<h2>Relatorio de Cliente</h2>
+	<table class="table">
+		<tr>
+			<th>
+				Nome
+			</th>
+			<th>
+				Endereço
+			</th>
+			<th>
+				Email
+			</th>
+			<th>
+				Telefone
+			</th>
+			<th></th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Nome)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Endereco)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Email)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Telefone)
+				</td>
+			</tr>
+		}
+		<tr>
+			<td><b>@Model.Count registros de @Model.TotalItemCount</b></td>
+			<td><a href="/Relatorio/RelatorioCliente?pdf=true"><b>Gerar Relatório em PDF</b></a></td>
+		</tr>
+
+	</table>
+	<!--páginação de dados -->
+	@{
+		if (Model.TotalItemCount != Model.Count)
+		{
+			<div class="row">
+				<div class="col-md-12">
+					Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+					@if (Model.HasPreviousPage)
+				{
+						@Html.ActionLink("<<", "RelatorioCliente", new { pagina = 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })
+						@Html.Raw(" ");
+						@Html.ActionLink("< Anterior", "RelatorioCliente", new { pagina = Model.PageNumber - 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })
+				}
+				else
+				{
+						@:<<
+						@Html.Raw(" ");
+						@:< Anterior
+            }
+					@if (Model.HasNextPage)
+				{
+						@Html.ActionLink("Próxima >", "RelatorioCliente", new { pagina = Model.PageNumber + 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })
+						@Html.Raw(" ");
+						@Html.ActionLink(">>", "RelatorioCliente", new { pagina = Model.PageCount, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })
+				}
+				else
+				{
+						@:Próxima >
+						@Html.Raw(" ")
+						@:>>
+            }
+				</div>
+			</div>
+		}
+	}
+
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>
